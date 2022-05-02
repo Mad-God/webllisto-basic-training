@@ -436,7 +436,7 @@ def front_page():
     print("6. Exit")
     return int(input("Enter your choice: "))
 
-
+# https://github.com/Mad-God/webllisto-training-basic
 
 
 def member_login_page():
