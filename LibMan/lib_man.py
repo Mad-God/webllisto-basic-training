@@ -110,7 +110,7 @@ class Member(User):
 
     
     def previous_issues(self):
-        print("\nThis is all your previous issues: ")
+        print("\nThis is all your previous history till now issues: ")
 
         for book, t, f, s in self.history:
             if f:
