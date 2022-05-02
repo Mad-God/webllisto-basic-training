@@ -1,0 +1,338 @@
+************************* VIEWS ***************************
+function that takes a web request and returns a web response.
+ This response can be the HTML contents of a web page, or a 
+ redirect, or a 404 error, or an XML document, or an image
+
+
+Returning Errors:
+    There are subclasses of HttpResponse for a number of common 
+    HTTP status codes other than 200 (which means “OK”)
+
+    Return an instance of one of those subclasses instead of a 
+    normal HttpResponse in order to signify an error
+
+    you can also pass the HTTP status code into the constructor
+     for HttpResponse to create a return class for any 
+     status code you like.
+
+
+
+    404 error:
+        it’s a good idea to have a consistent 404 error page across 
+        your site, Django provides an Http404 exception. If you 
+        raise Http404 at any point in a view function, Django will 
+        catch it and return the standard error page for your 
+        application, along with an HTTP error code 404.
+
+        In order to show customized HTML when Django returns a
+         404, you can create an HTML template named 404.html and 
+         place it in the top level of your template tree.
+
+
+
+Async Views:
+    views can also be asynchronous (“async”) functions,
+     normally defined using Python’s async def syntax. Django 
+     will automatically detect these and run them in an async 
+     context. However, you will need to use an async server 
+     based on ASGI to get their performance benefits.
+
+
+
+
+HttpResponse:
+    Each view you write is responsible for instantiating,
+     populating, and returning an HttpResponse.
+
+    But if you want to add content incrementally, you can use
+     response as a file-like object:
+
+        >>> response = HttpResponse()
+        >>> response.write("<p>Here's the text of the web page.</p>")
+        >>> response.write("<p>Here's another paragraph.</p>")
+    
+    you can pass HttpResponse an iterator rather than strings.
+     HttpResponse will consume the iterator immediately, store
+     its content as a string, and discard it
+
+
+    Attributes:
+        content: A bytestring representing the content,
+         encoded from a string if necessary.
+
+
+
+        headers:A case insensitive, dict-like object that
+         provides an interface to all HTTP headers on the
+          response.
+
+
+        status_code: The status-code element is a three-digit
+         integer code giving the result of the attempt to
+          understand and satisfy the request.
+        
+
+    
+
+    Methods:
+        write(): This method makes an HttpResponse instance
+         a file-like object.
+
+        close(): This method is called at the end of the
+         request directly by the WSGI server.
+
+
+
+    subclasses:
+        HttpResponseRedirect: The first argument to the constructor
+         is required – the path to redirect to.
+
+        HttpResponsePermanentRedirect:  returns a permanent redirect
+         (HTTP status code 301) instead of a “found”
+          redirect (status code 302).
+
+        HttpResponseBadRequest: Acts just like HttpResponse
+         but uses a 400 status code.
+
+        HttpResponseNotFound: status code 404
+
+        HttpResponseForbidden: status code 403
+
+
+
+HttpRequest:
+    Each view recieves an http reuqest, that tells about the request
+
+    attributes:
+
+        body: The raw HTTP request body as a bytestring.
+         This is useful for processing data in different
+         ways than conventional HTML forms
+
+        path: A string representing the full path to the
+         requested page, not including the scheme, domain,
+         or query string.
+
+        method: A string representing the HTTP method
+         used in the request
+
+        GET: A dictionary-like object containing all
+         given HTTP GET parameters
+
+        POST: dictionary-like object containing all given
+         HTTP POST parameters, providing that the request
+         contains form data. 
+                It’s possible that a request can come in
+                 via POST with an empty POST dictionary
+                  – if, say, a form is requested via the
+                   POST HTTP method but does not include
+                   form data. Therefore, you shouldn’t use
+                   if request.POST to check for use of the 
+                   POST method; instead, use if 
+                   request.method == "POST"
+
+        user: An instance of AUTH_USER_MODEL representing 
+        the currently logged-in user. If the user isn’t
+         currently logged in, user will be set to an instance 
+         of AnonymousUser. You can tell them apart
+          with is_authenticated
+
+    methods:
+
+        get_full_path(): Returns the path, plus an
+         appended query string, if applicable.
+
+
+
+*********************** FORMS *******************************
+
+
+HTML forms:
+    collection of elements within the <form> tag
+
+    form must have 3 things:
+        the <input> elements
+        action: URL where the data should be returned
+        method: HTTP method for returning the data
+    
+
+GET and POST:
+    POST: browser bundles up the form data, encodes it
+     for transmission, sends it to the server,
+      and then receives back its response.
+
+    GET: bundles the submitted data into a string,
+     and uses this to compose a URL
+
+
+
+Django's role in forms:
+    Django handles three distinct parts of the work involved in forms:
+
+        preparing and restructuring data to make it ready for rendering
+        creating HTML forms for the data
+        receiving and processing submitted forms and data from the client
+
+
+
+DJANGO FORMS:
+    a Form class describes a form and determines how it works and appears.
+
+    a form class’s fields map to HTML form <input> elements.
+     (A ModelForm maps a model class’s fields to HTML form <input> elements via a Form
+
+    A form’s fields are themselves classes; they manage form
+     data and perform validation when a form is submitted.
+        Each field type has an appropriate default Widget
+         class, but these can be overridden as required.
+    
+    Differences bw rendering a form and a model instance:
+        it makes no sense to render an empty model,
+         but forms are rendered empty, for the user to fill up
+        when we handle a model instance in a view,
+         we typically retrieve it from the database. When we’re dealing with a form we typically instantiate it in the view.
+
+
+
+Building a django form:
+#    from django import forms
+
+#    class NameForm(forms.Form):
+#        field_name = forms.FieldType(**options)
+#
+#        your_name = forms.CharField(label='Your name', max_length=100)
+
+
+
+    the form has a is_valid() method which validated all the 
+    fields' data. If the data is valid, it places the form's
+    data in its cleaned_data attribute.
+
+
+    the view handling the form:
+        To handle the form we need to instantiate it in the
+         view for the URL where we want it to be published
+
+
+    bound and unbound form instances:
+        An unbound form has no data associated with it. When
+         rendered to the user, it will be empty or will contain default values.
+        
+        A bound form has submitted data, and hence can be
+         used to tell if that data is valid. If an invalid 
+         bound form is rendered, it can include inline error 
+         messages telling the user what data to correct.
+
+Form fields:
+
+    widgets: Each form field has a corresponding Widget class,
+     which in turn corresponds to an HTML form widget
+
+    field data:  once form has been successfully validated by
+     calling is_valid() (and is_valid() has returned True), 
+     the validated form data will be in the form.cleaned_data dictionary.
+
+
+
+Reusable form templates
+    If your site uses the same rendering logic for forms in 
+    multiple places, you can reduce duplication by saving the 
+    form’s loop in a standalone template and overriding the forms template_name
+     attribute to render the form using the custom template.
+
+    class MyForm(forms.Form):
+        template_name = 'form_snippet.html'
+
+
+
+
+
+************************ MODEL FORMS *******************************
+
+from django.forms import ModelForm
+from myapp.models import Article 
+
+# Create the form class.
+class ArticleForm(ModelForm):
+
+    class Meta:
+        model = Article
+        fields = ['pub_date', 'headline', 'content', 'reporter']
+
+
+
+
+Django provides a helper class that lets you create a Form class from a Django model.
+
+The generated Form class will have a form field for every model
+ field specified, in the order specified in the fields attribute.
+
+Each model field has a corresponding default form field
+
+In addition, each generated form field has attributes set as follows:
+
+    blank=True, then required is set to False
+
+    label is set to the verbose_name
+
+    choices set, then the form field’s widget will be set to Select
+
+
+
+
+save():
+    creates and saves a database object from the data bound to the form
+
+    ModelForm can accept an existing model instance as the keyword
+     argument instance; if this is supplied, save() will update that instance. 
+     If it’s not supplied, save() will create a new instance of the specified model
+
+    if the form hasn’t been validated, calling save() will do so by checking form.errors.
+
+    save() method accepts an optional commit keyword argument,
+     which accepts either True or False. If you call save()
+     with commit=False, then it will return an object that
+     hasn’t yet been saved to the database. In this case,
+     it’s up to you to call save() on the resulting model 
+     instance. This is useful if you want to do custom 
+     processing on the object before saving it
+
+
+
+selecting the fields:
+
+    fields = "__all__"
+    exclude = ["title"]
+
+overriding the defaults fields:
+    widgets = {
+            'name': Textarea(attrs={'cols': 80, 'rows': 20}),
+        }
+    
+
+    you can specify the labels, help_texts and error_messages,
+     field_classes, localized_fields attributes of the inner
+     Meta class if you want to further customize a field.    
+
+    
+providing initial values:
+    # form = ArticleForm(initial={'headline': 'Initial headline'}, 
+    # from = ArticleForm(instance = self.get_object)
+
+
+ModelForm factory function:
+    You can create forms from a given model using the standalone
+     function modelform_factory(), instead of using a class definition.
+    
+    # BookForm = modelform_factory(Book, fields=("author", "title"))
+
+
+    This can also be used to make modifications to existing forms
+
+
+
+complex queries, either or filtering, agregate queries, ORM advanced queryset, 
+
+Class based views
+
+

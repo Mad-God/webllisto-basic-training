@@ -1,0 +1,157 @@
+{
+  "states": [
+    {
+      "name": "Alabama", 
+      "abbreviation": "AL", 
+      "area_codes": [
+        "205", 
+        "251", 
+        "256", 
+        "334", 
+        "938"
+      ]
+    }, 
+    {
+      "name": "Alaska", 
+      "abbreviation": "AK", 
+      "area_codes": [
+        "907"
+      ]
+    }, 
+    {
+      "name": "Arizona", 
+      "abbreviation": "AZ", 
+      "area_codes": [
+        "480", 
+        "520", 
+        "602", 
+        "623", 
+        "928"
+      ]
+    }, 
+    {
+      "name": "Arkansas", 
+      "abbreviation": "AR", 
+      "area_codes": [
+        "479", 
+        "501", 
+        "870"
+      ]
+    }, 
+    {
+      "name": "California", 
+      "abbreviation": "CA", 
+      "area_codes": [
+        "209", 
+        "213", 
+        "310", 
+        "323", 
+        "408", 
+        "415", 
+        "424", 
+        "442", 
+        "510", 
+        "530", 
+        "559", 
+        "562", 
+        "619", 
+        "626", 
+        "628", 
+        "650", 
+        "657", 
+        "661", 
+        "669", 
+        "707", 
+        "714", 
+        "747", 
+        "760", 
+        "805", 
+        "818", 
+        "831", 
+        "858", 
+        "909", 
+        "916", 
+        "925", 
+        "949", 
+        "951"
+      ]
+    }, 
+    {
+      "name": "Colorado", 
+      "abbreviation": "CO", 
+      "area_codes": [
+        "303", 
+        "719", 
+        "720", 
+        "970"
+      ]
+    }, 
+    {
+      "name": "Utah", 
+      "abbreviation": "UT", 
+      "area_codes": [
+        "385", 
+        "435", 
+        "801"
+      ]
+    }, 
+    {
+      "name": "Vermont", 
+      "abbreviation": "VT", 
+      "area_codes": [
+        "802"
+      ]
+    }, 
+    {
+      "name": "Virginia", 
+      "abbreviation": "VA", 
+      "area_codes": [
+        "276", 
+        "434", 
+        "540", 
+        "571", 
+        "703", 
+        "757", 
+        "804"
+      ]
+    }, 
+    {
+      "name": "Washington", 
+      "abbreviation": "WA", 
+      "area_codes": [
+        "206", 
+        "253", 
+        "360", 
+        "425", 
+        "509"
+      ]
+    }, 
+    {
+      "name": "West Virginia", 
+      "abbreviation": "WV", 
+      "area_codes": [
+        "304", 
+        "681"
+      ]
+    }, 
+    {
+      "name": "Wisconsin", 
+      "abbreviation": "WI", 
+      "area_codes": [
+        "262", 
+        "414", 
+        "534", 
+        "608", 
+        "715", 
+        "920"
+      ]
+    }, 
+    {
+      "name": "Wyoming", 
+      "abbreviation": "WY", 
+      "area_codes": [
+        "307"
+      ]
+    }
+  ]
+}

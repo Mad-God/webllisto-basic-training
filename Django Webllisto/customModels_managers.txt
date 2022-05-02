@@ -1,0 +1,217 @@
+custom queryset
+
+user models
+
+manager overwrite
+
+migrations
+
+
+
+********** DJANGO TRANSLATIONS ***************************
+
+we use gettext or gettext_lazy to indiacte that should be translated
+ in the client's browser if translation is available.
+
+We use gettext() for indicating such string in the views or function calls,
+ as they are executed each time.
+
+In models, we use gettext_lazy() because the code in the models 
+ is executed once, so, gettext_lazy translates the string each
+ time we access the name of the attribubte, istead of when the 
+ attribute is declared.
+
+
+
+*********** DJANGO CUSTOM User MODELS *********************
+
+we make  the model, 
+
+extend AbstractBaseUser class from it.
+
+define the USERNAME_FIELD
+define the REQUIRED_FILEDS 
+
+extend the PermissionMixin class
+
+add the custom manager, extending the BaseUserManager, so that
+ we can use the create_user and create_superuser methods
+    in the create_user() we create an object of self.model, and then 
+     set_password(), then save this object.
+    in the create_superuser(), we just verify that all the fields
+     are valid, and then call the create_user() with the same params
+
+
+set the settings.py 
+    AUTH_USER_MODEL = custome_model_name
+
+makemigrations and migrate
+
+add the model to admin
+
+
+
+********** CREATING MANAGER FOR OUR CUSTOM USER ***********
+
+We need to use the django's UserManager if we're using the 
+ default django fields, but since we have a custom user,
+
+We need to define a custome manager extending the BaseUserManager
+ We need this manager to utilize the methods like create_user,
+ create_superuser
+
+Now in the CustomManager, we define the create_user(), create_spueruser()
+ methods, and define how the user creation is to function
+
+
+Now, to set this manager as the manager for our user model, 
+ we need to set the object class as manager class's object,
+ i.e, object = CustomUserManager()
+
+
+
+
+*************** AbstractUser Class vs AbstractBaseUser Class
+
+AbstractUserClass:
+    has some fields pre-defined, you can make
+     modifications to fields.
+AbstractBaseUserClass:
+    has basic functionalities but not any 
+     fields like username, is_staff, etc.
+    All this has to be created manually, 
+     along with all the permission.
+
+
+**************** MIGRATIONS ******************************
+
+
+
+process
+
+exploring databases
+
+explore migration files
+
+unapplying and reapplying migrations
+
+**
+
+when we run the initial migrate command,
+django applies some pre-written migrations
+and make some generic tables for the 
+the apps that come installed with django
+like auth, admin etc.
+ 
+
+
+When we run the makemigrations command
+a new folder is created by django, migrations
+it has __pychache__ to store the byte compiled
+ programs for faster execution
+__init__.py file to indicacte that the directory
+ is a part of django module
+and the migration files:
+    it is django's way of making changes to database.
+
+    it has name, dependencies and, 
+    operations:
+        migrations.CreateModel(
+            name, fields, options,
+        ),
+        migrations.AlterModelOptions(),
+        migrations.RenameField(),
+
+
+    now this file is used by the ORM to transform our classes
+     into database tables, using queries.
+     You can see these queries using:
+     # python manage.py sqlmigrate app_name mig_file_name
+    
+
+unapplying migrations:
+    we can unapply migrations simply by using the migrate command
+     on a previous migrations file, so the db schema is reverted
+     to how it was when that migration was applied.
+    
+
+    But this doesn't always work.
+
+
+*********** Custom migrations *********
+
+first we need an empty migrations file:
+    python manage.py makemirations app_name -n name_of_the_mig_file
+
+this creates a new file in the migrations folder
+
+now, we will make a simplpe migration to capitalize name of 
+all the records in the table of a model
+
+create a python function(self, schema_editor):
+    get the model we're working with
+
+
+
+
+
+model manager, form, views, model form. 
+
+
+
+**************** MANAGERS DOCS ****************************
+
+interface through which database query operations are provided
+
+manager_names:
+    default: objects
+
+    to change:
+        man_name = models.Manger()
+
+
+custom_managers:
+    you can create one by extending the base Manager class
+     and instantiating your custom Manager in your model.
+    
+    generally used for 'table-level' functionalities.
+
+
+    multiple managers:
+        you can have multiple managers, just have to instatiate
+         them in the model with the Manager class-
+            # objects = models.Manager()
+            # objects2. = CustomManager()
+            # ....
+        
+        With multiple managers, you can modify the base method
+         get_queryset() which return all objects of that model by
+         default, but can now return whatever you want.
+        
+
+Custom Queryset:
+    we can add custom methods to a class extending the 
+     models.Queryset class, so that we can have custom filtering 
+     on data as we like. Then, we call these methods from another
+     custom method defined in our custom class.
+    
+    If this seems like a hassle, we can make a custom queryset 
+     class which can be used like a manager itself from the model.
+     For this, we can use the as_manager() method on the custom
+     queryset class, when decalring as a manager in the Class
+        
+        # class Person(models.Model):
+            # people = CustomQuerySet().as_manager()
+
+        Now, the methods that are availabe in the managers will 
+         be copied to the queryset class. But not all methods:
+         the following rules are follwed when deciding:
+
+         Public methods are copied by default.
+         Private methods (starting with an underscore) are not copied by default.
+         Methods with a queryset_only attribute set to False are always copied.
+         Methods with a queryset_only attribute set to True are never copied.
+
+
+
+

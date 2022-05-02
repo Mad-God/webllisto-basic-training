@@ -1,0 +1,296 @@
+each model class represents a table in database
+
+
+each class is a subclass of django.db.models.Model
+
+Each attribute of the model represents a datafield field
+
+django models provide an auto-generated database-access API
+
+
+Default database is sqlite, but we can also use MySQL, Oracle SQL etc.
+
+
+*********** Creating our own models **********
+
+make a models.py file in the applications folder
+
+now we write our own model classes:
+    class Modelname(models.Model):
+        field_name = models.FieldType(args, kwargs)
+    
+
+now that we have our class defined, we need to save it to the db
+
+for this we have:
+
+makemigrations: 
+    create new migrations based on the changes you've made to your model
+    basically creates an sql query for the changes done in the class
+
+    these sql queries are stored in a file, which is present in 
+    the migrations folder of the application
+
+
+
+migrate:
+    for applying and unapplying the the migrations or changes
+    executes all applications' (including built-in) SQL statements
+
+    The tables are created after execution of statements
+
+
+
+sqlmigrate:
+    displays SQL statements for a migration
+    # python manage.py sqlmigrate app_name dbfile_name
+        the dbfile_name is a file present in the aplication's migrations folder.
+
+
+
+the migrations file:
+    0001_inital.py
+
+
+
+****************** FIELD OPTIONS ***********************
+
+
+null - to store empty values as null, (default false)
+
+blank - to allow a column to be blank i.e, without any value (default false)
+
+default - default value for a field. It can be a value or a callable
+    if callable, it is called each time a new object is created
+
+
+verbose_name - human-readable name for the field. If the name isn't given,
+    field's attribute name is used after converting _ to space.
+
+primary key - field is to be used as the primary key for the table
+    There is an automatic primary key field created for each table
+    
+    It is a read-only field and if you try to overwrite it then
+    a new object is created alongside the old one
+
+
+unique - to ensure each record is unique throughout the table
+
+choices - A sequence of 2-tuples to use as choices for this field. 
+    If this is given, the default form widget will be a select box instead 
+    of the standard text field and will limit choices to the choices given.
+
+**************** FIELD TYPES *************************
+
+IntegerField - range ( -2147483648 to 2147483647)
+
+BigIntergerField - 20 digits
+
+AutoField - IntegerField that increments automatically
+
+BooleanField - 
+
+BinaryField - (max_length)
+
+CharField - (max_length)
+
+DateField - (auto_now)
+
+DateTimeField - 
+
+EmailField - 
+
+FileField - (upload_to)
+
+ImageField - Same as file field but validates that the 
+    file uploaded is a an image
+    (upload_to, height_field, width_field)
+
+
+SlugField - (max_length)
+
+TextField - For large text
+
+TimeField
+
+
+URLField - 
+
+
+
+
+Relationship Fields:
+
+ForeignKey - 
+A many-to-one relationship. Requires two positional arguments:
+the class to which the model is related and the on_delete option.
+
+To create a recursive relationship – an object that has a many-to-one
+ relationship with itself – 
+ use models.ForeignKey('self', on_delete=models.CASCADE).
+
+If you need to create a relationship on a model that has not
+ yet been defined, you can use the name of the model, rather
+ than the model object itself
+
+
+related_name - the name to use for the
+ relation from the related object back to this one. 
+
+
+limit_choices_to - Sets a limit to the available choices for
+ this field when this field is rendered using a ModelForm or
+ the admin (by default, all objects in the queryset are available 
+ to choose). 
+ Either a dictionary, a Q object, or a callable 
+ returning a dictionary or Q object can be used.
+
+
+
+
+ManyToManyField - 
+A many-to-many relationship. Requires a positional argument:
+ the class to which the model is related, which works exactly
+ the same as it does for ForeignKey, including recursive and lazy relationships.
+
+
+
+
+OneToOneField - 
+
+A one-to-one relationship. Conceptually, this is similar to 
+ a ForeignKey with unique=True, but the “reverse” side of the 
+ relation will directly return a single object.
+
+This is most useful as the primary key of a model which “extends”
+ another model in some way; Multi-table inheritance is implemented
+ by adding an implicit one-to-one relation from the child 
+ model to the parent model.
+
+If you do not specify the related_name argument for the OneToOneField, 
+ Django will use the lowercase name of the current model as
+ default value.
+ 
+
+
+************************ MODEL METADATA *********************
+
+Model metadata is “anything that’s not a field”, such as
+ ordering options (ordering), database table name (db_table), 
+ or human-readable singular and plural names (verbose_name and verbose_name_plural). 
+ None are required, and adding class Meta to a model is 
+ completely optional.
+
+
+*********************** MODEL PROPERTY **********************
+
+Also known as “managed attributes”, and a feature of Python 
+since version 2.2. This is a neat way to implement attributes 
+whose usage resembles attribute access, but whose implementation 
+uses method calls.
+
+
+********************** MODEL MANAGER *************************
+
+A Manager is the interface through which database query operations
+ are provided to Django models. At least one Manager exists 
+ for every model in a Django application.
+
+By default, Django adds a Manager with the name objects to
+ every Django model class. However, if you want to use objects 
+ as a field name, or if you want to use a name other than 
+ objects for the Manager, you can rename it on a per-model 
+ basis. To rename the Manager for a given class, define a 
+ class attribute of type models.Manager() on that model.
+
+
+
+
+
+************************** MODEL METHODS *********************
+
+Define custom methods on a model to add custom “row-level” 
+ functionality to your objects. Whereas Manager methods are 
+ intended to do “table-wide” things, model methods should 
+ act on a particular model instance.
+
+This is a valuable technique for keeping business logic in 
+ one place – the model.
+
+
+
+************************** MODEL INHERITANCE *******************
+Inheritance work just like it used to work with the exception
+The base class should subclass django.db.models.Model.
+
+
+There are 3 types of inheritance in django:
+
+Abstract Base class
+multi-table inheritance
+proxy models
+
+
+Abstract Base Class
+    here, we create a model class extending the models.Model,
+    but in the met sub-class of this class, 
+    we set the abstract attribute as True. This specifies 
+    that this class is an abstract modle class, hence,
+    it not be used to create any database table
+    when it is used as a base class for other models, 
+    its fields will be added to those of the child class.
+
+
+    meta inheritance:
+        by default, the meta subclass of a model class is inherited 
+        from its parent class. But in case of abstract classes,
+        before inheriting the meta subclass, the abstract 
+        attribute is set to false, so that the chil classes of 
+        an abstract class are not abstract themselves by default.
+    
+
+Multi-table inheritance
+    when each model in the hierarchy is a model all by itself. 
+    Each model corresponds to its own database table and 
+    can be queried and created individually. The inheritance 
+    relationship introduces links between the child model 
+    and each of its parents (via an automatically-created
+    OneToOneField).
+
+    meta subclass inheritance:
+        child class doesn't inherit from the parent's meta
+        but somoe functionalities are inherited still like
+        ordering, get_latest_by etc, so they need to be over-
+        ridden in the child class if required
+
+
+
+Proxy models
+    creating a proxy for the original model. You can 
+    create, delete and update instances of the proxy model 
+    and all the data will be saved as if you were using 
+    the original (non-proxied) model. The difference is that 
+    you can change things like the default model ordering 
+    or the default manager in the proxy, without having to 
+    alter the original.
+
+    Proxy models are declared like normal models. You tell 
+    Django that it’s a proxy model by setting the proxy 
+    attribute of the Meta class to True.
+
+
+
+
+
+
+
+
+
+******************** CONNECTING TO EXISTING DATABASE ******************************
+
+
+change the database dictionary
+    the engiine, path to the db, user, pwd, host, port
+
+inspectdb
+

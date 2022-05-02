@@ -1,0 +1,300 @@
+******************** Basic Queries ****************
+Book.objects.all()
+
+Book.objects..filter(in_print=True)
+
+Book.objects.filter(field__gt=val)
+Book.objects.filter(field__gte=val)
+
+Book.objects.filter(field__lt=val)
+Book.objects.filter(field__lte=val)
+
+Book.objects.filter(field__iexact="Title")
+Book.objects.filter(field__icontains="Title")
+
+Book.objects.filter(field__isnull=True)
+
+Book.objects.filter(genre__title = "Horror")
+
+*********** Using Q for complex queries **************
+
+from django.db.models import Q
+
+Book.objects.filter(Q(in_print=True) & Q(title_icontains="The"))
+
+Book.objects.filter(Q(in_print=True) | Q(title_icontains="The"))
+
+Book.objects.filter(~Q(in_print=True))
+
+
+
+QUERYSET Api reference:
+
+filter()
+
+exclude()
+
+annotate()
+    # q = Blog.objects.annotate(number_of_entries=Count('entry'))
+
+    or one without the annotation:
+    # q = Blog.objects.annotate(Count('entry'))
+
+
+
+alias():
+    # from django.db.models import Count
+    # blogs = Blog.objects.alias(entries=Count('entry')).filter(entries__gt=5)
+
+
+    to be used with aggregate methods:
+        you need to promote it to  annotations:
+            Blog.objects.alias(entries=Count('entry')).annotate(
+                entries=F('entries'),
+            ).aggregate(Sum('entries'))
+
+
+order_by()
+    in case of ordering by a foreign key, the ordering will be done 
+     as however the records of the foreign key model are ordered.
+     Or by default, by thier ID.
+    
+    you can also compound this queryset with the .asc() and .desc()
+     methods. In these mrthods, we have parameters like null_first,
+     null_last, to control sorting of null values.
+
+    You can order by a field converted to lowercase with Lower
+     which will achieve case-consistent ordering:
+    # Entry.objects.order_by(Lower('headline').desc())
+
+    Each order_by() call will clear any previous ordering.
+     ex: Entry.objects.order_by('headline').order_by('pub_date')
+     this query will be ordered by pub_date and not headline.
+
+    You can tell if a queryset is ordered or not by using the 
+     qs.ordered attribute.
+
+
+reverse():
+
+
+
+values():
+    it returns a queryset where the individual items are dictionaries
+     instead of Model instances.
+
+
+    # Blog.objects.filter(name__startswith='Beatles').values()
+    # Blog.objects.values('id', 'name')
+
+    we can also pass expression, which are converted to annotations
+
+    # Blog.objects.values(lower_name=Lower('name'))
+
+     you can call filter(), order_by(), etc. after the values()
+      call, that means that these two calls are identical
+    
+    # Blog.objects.values().order_by('id')
+    # Blog.objects.order_by('id').values()
+
+
+
+union():
+    # qs1.union(qs2, qs3)
+
+
+intersection()
+
+difference()
+
+
+
+select_related():
+    in django, queries are lazy, i.e, htey get executed only
+     when their data is required in the code.
+
+    In case of foreign key relations, whenever we access
+     the related record of any record, the db is queried again to 
+     fetch the data of related record that particular record. This
+     leads to large number of queries, hence performance is compromised.
+    
+    Instead, we can use select_related() to specify what fields we 
+     want from the related records of any record so that when the 
+     query for selecting the primary record is fired, it also fetches the 
+     data from the related record in the single query, instead of 
+     individual queries:
+
+     # orders = Order.objects.select_related("customer").all()
+
+
+prefetch_related():
+    it works with m2m relations as there are more than 2 tables 
+    M2M relations have the 2 main tables and the 3rd association table
+
+    This is better suited for the m2m relations due to the restrictions
+     from the django ORM, which makes it difficult to fetch the data.
+
+    It does not do a database join. Instead, it executes additional
+     database queries and does the joining in Python.
+
+
+defer():
+    when your model contains fields with large or complex data 
+     that you're not sure you need, you can use defer() to avoid 
+     loading these fields in the queryset.
+
+    When you access these fields further in the code, they are 
+     queried from the db, one at a time.
+
+    # Entry.objects.defer("headline", "body")
+    # Entry.objects.defer("body").filter(rating=5).defer("headline")
+
+    pass none to defer() to clean the list of defered fields.
+
+
+
+only():
+    when most of the feilds are to be deffered, using only() to 
+     specify the complementary set of fields can be better.
+
+    successive calls to only() result in only the final
+     fields being considered
+    # Entry.objects.only("headline", "comments").only("title")
+
+
+
+
+get():
+
+
+create():
+
+get_or_create():
+
+
+bulk_create()
+
+bulk_update()
+
+count()
+
+first()
+
+last()
+
+update():
+    Performs an SQL update query for the specified fields, and
+     returns the number of rows matched (which may not be equal
+     to the number of rows updated if some rows already have 
+     the new value).
+
+
+delete():
+
+
+regex():
+    # Entry.objects.get(title__regex=r'^(An?|The) +')
+
+
+
+*********************** F expressions ***********************
+
+An F() object represents the value of a model field, transformed
+ value of a model field, or annotated column. It makes it possible 
+ to refer to model field values and perform database operations 
+ using them without actually having to pull them out of the 
+ database into Python memory.
+
+
+    # from django.db.models import F
+
+    # reporter = Reporters.objects.get(name='Tintin')
+    # reporter.stories_filed = F('stories_filed') + 1
+    # reporter.save()
+
+    Here, since we know that a query is fired only when it's value is needed,
+    the record pertaining to the get() method will never be loaded 
+    into our python. Instead, the F() method will tell the db
+    to update its value without havinig to fetch the record from
+    database. It is more efficient, as the operation is done a 
+    a db level, instead of python level.
+
+
+F() therefore can offer performance advantages by:
+
+    getting the database, rather than Python, to do work
+    reducing the number of queries some operations require
+
+
+Using F() with annotations:
+    company = Company.objects.annotate(
+        chairs_needed=F('num_employees') - F('num_chairs'))
+
+
+Using F() with aggregate:
+    result = Items.objects.aggregate(total = Sum(F("price") * 
+     F("quantity")))
+    
+
+
+******************** AGGREGATE QUERIES **************************
+
+ it is a terminal clause for a QuerySet that, when invoked,
+  returns a dictionary of name-value pairs. The name is an 
+  identifier for the aggregate value; the value is the 
+  computed aggregate.
+
+
+Generating aggregates for each item in a QuerySet:
+    Per-object summaries can be generated using the annotate() 
+     clause. When an annotate() clause is specified, each object 
+     in the QuerySet will be annotated with the specified values.
+
+
+    annotate() is not a terminal clause. The output of the
+     annotate() clause is a QuerySet
+
+
+
+
+
+Joins and aggregates:
+    # from django.db.models import Max, Min
+    
+    # Store.objects.annotate(min_price=Min('books__price'),
+     max_price=Max('books__price'))
+
+
+
+Aggregation with other qs clauses:
+
+    get count of authors of all books
+    # Book.objects.filter(name__startswith="Django")
+     .annotate(num_authors=Count('authors'))
+
+    get average price of books starting with django    
+    # Book.objects.filter(name__startswith="Django")
+     .aggregate(Avg('price'))
+
+    get all books with more than 1 authors
+    # Book.objects.annotate(num_authors=Count('authors'))
+     .filter(num_authors__gt=1)
+    
+
+    ordering by number of authers
+    # Book.objects.annotate(num_authors=Count('authors'))
+     .order_by('num_authors')
+
+
+Aggregating annotations:
+    # Book.objects.annotate(num_authors=Count('authors'))
+     .aggregate(Avg('num_authors'))
+
+
+
+You can also create your aggregate functions by creating a class
+ and extending the Aggregate class from it.
+
+ django.db.models import Aggregate
+    
+

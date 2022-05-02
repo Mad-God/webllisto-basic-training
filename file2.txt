@@ -1,0 +1,3 @@
+PEP 236: __future__ Directives
+The reaction to nested scopes was widespread concern about the dangers of breaking code with the 2.1 release, and it was strong enough to make the Pythoneers take a more conservative approach. This approach consists of introducing a convention for enabling optional functionality in release N that will become compulsory in release N+1.
+The syntax uses a from...import statement using the reserved module name __future__. Nested scopes can be enabled by the following statement:

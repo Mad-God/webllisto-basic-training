@@ -1,0 +1,91 @@
+mory managemmeent, interpreted or compiled, why slow python?, uses an drawbacks, basic datatypes, 
+methods on datatypes, scopes of functions, problems on hackerrank, 
+
+
+SOD format: 
+
+
+
+Memory has stack and heap. Variable points to stack, stack values reference heap objects.
+Wehn a reference counter goes to zero, the object is removed. 
+
+
+After a certain number of referencing and dereferencing, the garbage collector collects unreferenced objects explicitly. You can check this value by 
+Import gc
+gc.get_threshold()
+This is useful when no variable is referencing an object but the reference count is not zero, for ex. An empty list inside an empty list i.e, [[...]]
+
+Python is both compiled and interpreted, i.e, 
+Source code (compiler) -> byte code (interpreter from python virtual machine) -> Machine language
+
+The byte code allows for portability of code on different platform using the PVM
+
+
+
+Cpython is the python implementation using the c language.
+Same way we have Jython, IronPython for .NET
+
+
+
+Rapid-prototyping makes python slow
+Interpreted language
+Lack of concurrency, only one thread per interpreter
+
+
+
+
+
+String:
+
+Capitalize
+Upper
+Lower
+Count(“o”)
+Find(“o”)
+Centre(20, “z”)
+Isalnum()
+Isalpha()
+Isnumeric()
+IsLower()
+IsSpace()
+Istitle()
+Endswith()
+Split()
+Join()
+Partition()   returns tuple of first substirng
+
+
+
+
+Set:
+
+Add
+Clear
+Copy
+Diffrence
+Discard
+Diffrence_update
+Intersection
+Isdisjoint
+Issubset
+Issuperset
+Symmetric_diffrence
+Union
+Update
+
+
+
+List:
+Append
+Count
+Extend
+Index
+Insert(x,y)
+Pop(index)
+Remove(element)
+
+
+
+
+
+string, list, set, dict, tuple, int, float

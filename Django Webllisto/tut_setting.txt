@@ -1,0 +1,190 @@
+SETTINGS.PY DOCS:
+
+
+gives the projects thesettings and evironment variables it needs
+
+specified by the DJANGO_SETTINGS_MODULE in  manage.py module
+
+
+
+steps in compiling the settings:
+    load global settings.py file
+    override settings from the project's settings.py file
+
+
+to see the diffrence in the settings file of project and the global settings file:
+    python manage.py diffsettings
+
+
+
+to use the settings in your python code:
+    from django.conf import settings
+
+    this is NOT the settings fiule or theglobal settings, its an object that acts as an interface to these things
+
+
+
+
+You shouldn't alter the settings in your code at runtime; only in the actual settings.py file
+
+
+
+create your own settings
+    you can
+
+
+using settings without the DJANGO_SETTINGS_MODULE
+    django.conf.settings.configure(default_settings, **settings)¶
+
+    # example
+        from django.conf import settings
+        if not settings.configured:
+            settings.configure(myapp_defaults, DEBUG=True)
+
+
+
+
+
+
+Generic settings:
+
+
+BASE_DIR 
+
+SECRET_KEY:
+    used to provide cryptographic_signing
+
+    must be defined
+    used for:
+        
+        sessions
+        messages, like cockiesStorage or FallBackStorage
+        password reset view tokens
+
+DEBUG:
+    debug mode is the display of detailed error pages
+    
+    a detailed traceback, including a lot of metadata about your environment
+    
+    however, it will exclude any setting whose name includes any of the following:
+
+        'API'
+        'KEY'
+        'PASS'
+        'SECRET'
+        'SIGNATURE'
+        'TOKEN'
+    
+    when debug is on, Django will remember every SQL query it 
+        executes. This is useful when you’re debugging, 
+        but it’ll rapidly consume memory on a production server.
+
+
+    if DEBUG is False, you also need to properly set the 
+        ALLOWED_HOSTS setting. Failing to do so will result in all 
+        requests being returned as “Bad Request (400)”.    
+
+
+ALLOWED_HOSTS:
+    list of strings representing the host/domain names 
+     that this Django site can serve
+
+    values can be:
+        fully qualified names
+        beginning with a dot (.); treated as subdomain wildcard
+        * will match anything
+    
+    in case host does not match any value in this list, the 
+     django.http.HttpRequest.get_host() method will raise SuspiciousOperation.
+
+
+
+INSTALLED_APPS:
+    list of strings designating all applications that are enabled in this project
+
+    each string is a path to either:
+        application configuration class
+        or package containing application
+
+    code shouldn't access INSTALLED_APPS directly
+
+    app names must be unique
+
+    in case of several version of same app accessing same resources,
+     version mentioned first has preference
+    
+
+
+MIDDLEWARE:
+
+    list of middleware being used in django
+
+    Middleware is a framework of hooks into Django’s 
+     request/response processing. It’s a light, low-level 
+     “plugin” system for globally altering Django’s input or output.
+
+
+    Each middleware component is responsible for doing some 
+     specific function. For example, Django includes a middleware 
+     component, AuthenticationMiddleware, that associates users 
+     with requests using sessions.
+
+
+
+
+TEMPLATES:
+    list containing the settings for all template engines to be used 
+
+
+    DIRS:
+        Directories where the engine should look for template source files, in search order.
+
+
+    APP_DIRS:
+        Whether the engine should look for template source files inside installed applications.
+
+    OPTIONS:
+        Extra parameters to pass to the template backend.
+
+    BACKEND:
+        The template backend to use
+
+
+ROOT_URLCONF:
+    A string representing the full Python import path to your root URLconf, 
+    for example "mydjangoapps.urls". Can be overridden on a per-request basis 
+    by setting the attribute urlconf on the incoming HttpRequest object. 
+
+
+    How DJANGO processes a request:
+        determine root urlconf
+
+        Django loads that Python module and looks for the variable urlpatterns.
+
+        Django runs through each URL pattern, in order, and stops at the 
+            first one that matches the requested URL
+
+        Once one of the URL patterns matches, Django imports and calls the given view
+
+        If no URL pattern matches, or if an exception is raised during any point in this process
+
+
+
+WSGI_APPLICATION:
+    Web Server Gateway Interface
+    
+    The full Python path of the WSGI application object that 
+     Django’s built-in servers (e.g. runserver) will use. 
+     The django-admin startproject management command will create a standard wsgi.py 
+     file with an application callable in it, and point this setting to that application.
+
+
+
+DATABASES:
+    specifies the engine and the name of the databse that we're using for our site's database
+
+
+
+
+STATIC_URL:
+    path location of all our static files like images, js, css

@@ -1,0 +1,75 @@
+Project to act as a bike rental interface with customer and shop_keeper views
+
+
+
+Features:
+
+    Add customers to the system
+    Add shop owners to the system
+
+    login as specific customer or shop owner
+
+    View all the customers and shop_keepers
+
+
+
+    Backend features:
+        keep track  of all bike rentings among customers and shops
+        impose penalty if bike return is delayed
+        provide discount for bulk renting of bikes
+        automatically update stocks of corresponding shop upon bike renting and return
+
+
+
+    customer features:
+        Rent bikes
+        return bikes
+        View rental history
+
+
+    shop_keeper features:
+        Update Bike Stock
+        View Rental History
+
+
+
+
+
+Menu Explanation:
+
+    first view:
+        login or sign-up
+        view all customers, rentals, and issues (for debugging)
+        exit the program
+    
+    sign-up view:
+        provide name for the customer signup
+        provide name and stock data for shop_keeper sign-up
+    
+
+    login view:
+        provide name only to login as that customer or shop_keeper
+
+    shop_keeper view:
+        see number of bikes currently available
+        update the number of bikes currently available
+        View all the renting records of your store
+        logout of your account
+
+    customer view:
+        Issue bike:
+            see all the stores and number of bikes available in each one
+            choose which store to rent from
+            choose the number of bikes
+            choose the time duration of renting
+            get a summary of the current issue
+        
+        Return Bike:
+            see all the ongoing renting on your customer form all the shops
+            choose which renting to close
+            you will be prompted if penalty for late return is applicable
+            you will be prompted if offers for group renting is applicable
+            final price will be displayed
+        
+        see all the previous issues done on your account, closed or not
+

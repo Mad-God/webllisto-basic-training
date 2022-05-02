@@ -1,0 +1,81 @@
+Project to act as a Library Management interface with customer and shop_keeper views
+
+
+Features:
+    login as library member
+    signup as library member
+    signup as librarian
+    login as librarian
+
+
+    as a librarian:
+        add books
+        remove books
+
+
+    as a member:
+        issue book
+        return book
+        check and pay dues on account
+        see issued books
+        see issue history
+    
+    automated features:
+        maintain stocks of books on issue or return
+        update library issue record on issue and return
+        maintain member account dues 
+        impose fine on late book returns
+
+
+
+classes used:
+    User:
+        to act as the template class for storing personal data of members and Librarians
+
+    Member:
+        to store member instances belonging to a particular libarary
+
+        contains methods for functions arelated to issuing and returning books
+
+    Librarian:
+        to store the librarian instances 
+
+        contains methods for adding and removing books from the library
+
+    Catalog:
+        to store the individual instances of the books 
+
+
+    Library:
+        to store the instances of the main Library
+
+        contains methods to show all available books and issues of the members
+    
+
+global functions:
+
+    front_page():
+        to display the main options to the user, like login, signup
+    
+    member_signup_page():
+        to add new member to the record
+    
+    librarian_signup_page():
+        to add new librarian to the record
+    
+    librarian_login_page():
+        to get the accesibility of librarian functionality as the given librarian
+    
+    member_login_page():
+        to get the accesibility of nmember functionality as the given member
+
+
+    list_page():
+        to display all the data availble in the library, like books, issues, members, librarians 
+
+
+    add_dummy_data():
+        to add some dummy data to the system when program is run initially
+         
+
+
